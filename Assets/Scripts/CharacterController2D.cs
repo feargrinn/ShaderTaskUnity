@@ -1,25 +1,45 @@
+using System;
 using UnityEngine;
 
 public class CharacterController : MonoBehaviour
 {
-    private float _moveSpeed = 5f;
+    private Rigidbody _rigidbody;
+    private Vector3 _moveDirection;
+    private const float MoveSpeed = 5f;
+
+    private void Awake()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+        _moveDirection = Vector3.zero;
+    }
+
     private void Update()
     {
+        float moveDirectionX = 0f;
+        float moveDirectionY = 0f;
+
         if (Input.GetKey(KeyCode.W))
         {
-            transform.Translate(Vector3.up * Time.deltaTime * _moveSpeed);
+            moveDirectionY = +1f;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.Translate(Vector3.down * Time.deltaTime * _moveSpeed);
+            moveDirectionY = -1f;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(Vector3.left * Time.deltaTime * _moveSpeed);
+            moveDirectionX = -1f;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(Vector3.right * Time.deltaTime * _moveSpeed);
+            moveDirectionX = +1f;
         }
+        
+        _moveDirection = new Vector3(moveDirectionX, moveDirectionY).normalized;
+    }
+
+    private void FixedUpdate()
+    {
+        _rigidbody.linearVelocity = _moveDirection * MoveSpeed;
     }
 }
